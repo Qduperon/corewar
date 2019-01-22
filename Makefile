@@ -6,7 +6,7 @@
 #    By: qduperon <qduperon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/03/06 14:30:26 by qduperon          #+#    #+#              #
-#    Updated: 2019/01/18 18:33:20 by qduperon         ###   ########.fr        #
+#    Updated: 2019/01/22 13:26:25 by qduperon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,21 @@ LIBFLAGS = -L$(LIB) -lft
 ASM_PATH = $(ASM_DIR)$(SRCS)
 I_ASM_PATH = $(ASM_DIR)$(INCS)
 O_ASM_PATH = $(ASM_DIR)$(OBJS)
+
+ASM_SRCS =  main.c\
+			fill_mem.c\
+			start.c\
+			op.c\
+			ft_str_split_2.c\
+			ft_str_split_3.c\
+			error.c\
+			tool.c\
+			other_tool.c\
+			instruction.c\
+			create_label.c\
+			handle_label.c
+
+ASM_OBJS = $(addprefix $(addprefix $(ASM_DIR), $(OBJS)), $(ASM_SRCS:.c=.o))
 
 #################################### COREWAR ###################################
 
@@ -85,7 +100,6 @@ COREWAR_SRCS = add_sub.c\
 			   tools_display.c\
 			   norme.c
 
-
 COREWAR_OBJS = $(addprefix $(addprefix $(COREWAR_DIR), $(OBJS)), $(COREWAR_SRCS:.c=.o))
 
 ################################### COMPILING ##################################
@@ -93,16 +107,15 @@ COREWAR_OBJS = $(addprefix $(addprefix $(COREWAR_DIR), $(OBJS)), $(COREWAR_SRCS:
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
-all: $(LIBFT) $(ASM) $(D_ASM) $(COREWAR)
+all: $(LIBFT) $(ASM) $(COREWAR)
 
 libft: $(LIBFT)
 
 $(LIBFT):
 	make -C $(LIB) > /dev/null || TRUE
 
-$(ASM):
-	make -C $(ASM_DIR)
-	mv $(ASM_DIR)$(ASM) .
+$(ASM): $(LIBFT) $(ASM_OBJS)
+	$(CC) $(CFLAGS) $(ASM_OBJS) -o $@ $(LIBFLAGS)
 
 $(O_ASM_PATH)%.o: $(ASM_PATH)%.c
 	mkdir -p $(O_ASM_PATH)
@@ -117,16 +130,12 @@ $(O_COREWAR_PATH)%.o: $(COREWAR_PATH)%.c
 
 clean:
 	make clean -C $(LIB)
-	make clean -C $(ASM_DIR)
 	rm -rf $(O_ASM_PATH)
-	rm -rf $(O_D_ASM_PATH)
 	rm -rf $(O_COREWAR_PATH)
 
 fclean: clean
 	make fclean -C $(LIB)
-	make fclean -C $(ASM_DIR)
-	rm -f $(ASM)
-	rm -f $(D_ASM)
-	rm -f $(COREWAR)
+	rm -rf $(ASM)
+	rm -rf $(COREWAR)
 
 re: fclean all

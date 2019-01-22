@@ -6,7 +6,7 @@
 /*   By: marnaud <marnaud@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/15 16:32:26 by marnaud           #+#    #+#             */
-/*   Updated: 2019/01/22 13:27:27 by qduperon         ###   ########.fr       */
+/*   Updated: 2019/01/22 13:58:21 by qduperon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int			fill_mem(t_mem *mem, char const *av)
 	char	*tmp;
 	int		cpt;
 
-	mem->file = NULL;
+	if (!(mem->file = ft_strnew(1)))
+		ft_error("Malloc error");
 	fd_r = open(av, O_RDONLY | O_NOFOLLOW);
 	if (ft_strlen(av) < 3 || (av[ft_strlen(av) - 2] != '.' ||
 	av[ft_strlen(av) - 1] != 's') || fd_r == -1)
